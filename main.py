@@ -10,8 +10,6 @@ fps = 30
 
 millisecondsPF = round(1 / fps, 3)
 
-print(millisecondsPF)
-
 def vidToAud(file):
     clip = mp.VideoFileClip("./" + file)
     clip.audio.write_audiofile("./" + file.split(".")[0] + ".mp3")
