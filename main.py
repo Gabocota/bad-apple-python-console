@@ -6,9 +6,7 @@ import shutil
 import time
 import pygame
 
-fps = 30
-
-millisecondsPF = round(1 / fps, 3)
+width = 100
 
 def vidToAud(file):
     clip = mp.VideoFileClip("./" + file)
@@ -21,15 +19,14 @@ def extractImages(pathIn, pathOut):
         success, image = vidcap.read()
         if success:
             aspectR = image.shape[0]/image.shape[1]
-            width = 100
-            height = int(100*aspectR)
+            height = int(width*aspectR)
             dim = (width, height)
             resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
-            print ('Saved Frame!', count, end="\r")
+            print ('Converting frames: ', count, end="\r")
             cv2.imwrite(pathOut + "\\frame%d.jpg" % count, resized)
             count = count + 1
         else:
-            print("Frames done!")
+            print("\nFrames done!")
             break
 
 def sound():
@@ -50,28 +47,31 @@ def animation():
     w = sample.shape[1]
 
     while os.path.isfile(f"./frames/frame{frameN}.jpg"):
-        nextFrame = time.time() + millisecondsPF
-        frame = cv2.imread(f"./frames/frame{frameN}.jpg")
-        asciiFrame = ""
-        for y in range(h):
-            line = "\n"
-            for x in range(w):
-                if (int(frame[y, x][0]) + int(frame[y, x][1]) + int(frame[y, x][2]))/3 >= 204:
-                    line += "@@"
-                elif (int(frame[y, x][0]) + int(frame[y, x][1]) + int(frame[y, x][2]))/3 >= 153:
-                    line += "##"
-                elif (int(frame[y, x][0]) + int(frame[y, x][1]) + int(frame[y, x][2]))/3 >= 102:
-                    line += "ll"
-                elif (int(frame[y, x][0]) + int(frame[y, x][1]) + int(frame[y, x][2]))/3 >= 51:
-                    line += ".."
-                else:
-                    line += "  "
-            asciiFrame += line
-        print((h+2)*"\033[F")
-        print(asciiFrame)
-        frameN += 1
-        while time.time() < nextFrame:
-            pass
+        try:
+            nextFrame = time.time() + millisecondsPF
+            frame = cv2.imread(f"./frames/frame{frameN}.jpg")
+            asciiFrame = ""
+            for y in range(h):
+                line = "\n"
+                for x in range(w):
+                    if (int(frame[y, x][0]) + int(frame[y, x][1]) + int(frame[y, x][2]))/3 >= 204:
+                        line += "@@"
+                    elif (int(frame[y, x][0]) + int(frame[y, x][1]) + int(frame[y, x][2]))/3 >= 153:
+                        line += "##"
+                    elif (int(frame[y, x][0]) + int(frame[y, x][1]) + int(frame[y, x][2]))/3 >= 102:
+                        line += "ll"
+                    elif (int(frame[y, x][0]) + int(frame[y, x][1]) + int(frame[y, x][2]))/3 >= 51:
+                        line += ".."
+                    else:
+                        line += "  "
+                asciiFrame += line
+            print((h+2)*"\033[F")
+            print(asciiFrame)
+            frameN += 1
+            while time.time() < nextFrame:
+                pass
+        except KeyboardInterrupt:
+            break
 
 if __name__ == "__main__":
     files = os.listdir("./")
@@ -106,6 +106,9 @@ if __name__ == "__main__":
     input("Resize your window. Press enter to start...")
 
     os.system('cls')
+    video = cv2.VideoCapture(mp4File)
+    fps = video.get(cv2.CAP_PROP_FPS)
+    millisecondsPF = round(1 / fps, 3)
     sound()
     animation()
 
@@ -114,4 +117,4 @@ if __name__ == "__main__":
         time.sleep(1)
         os.remove(f"./{mp3File}")
 
-    print("Exit")
+    print("exit")
