@@ -7,4 +7,4 @@ You can put any mp4 video into the folder and run it.
 
 - Requires python 3.11+
 
-The extended version includes more opcions and a funcion to store videos in a special format and not them being converted every time. This is at cost of performance and you may need a beefier computer.
+The extended version includes more opcions and a function to store videos in a special format and not them being converted every time. This is at cost of performance and you may need a beefier computer.
