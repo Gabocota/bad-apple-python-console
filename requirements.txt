@@ -1,4 +1,4 @@
 moviepy
 opencv-python
 pillow
-pygame >= 2.1.3
+pygame >= 2.1.3.dev8
