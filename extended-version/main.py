@@ -13,7 +13,7 @@ def vidToAud(file):
     clip = mp.VideoFileClip("./" + file)
     clip.audio.write_audiofile("./" + file.split(".")[0] + ".mp3")
 
-def extractImages(pathIn, pathOut):
+def extractImages(pathIn, pathOut, length):
     count = 0
     vidcap = cv2.VideoCapture(pathIn)
     while True:
@@ -23,7 +23,8 @@ def extractImages(pathIn, pathOut):
             height = int(width*aspectR)
             dim = (width, height)
             resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
-            print ('Converting frames: ', count, end="\r")
+            percent = (int(count)/int(length))*100
+            print("  Converting frames... " + math.floor(percent)*"#" + (100 - math.floor(percent))*" " + str(round(percent, 2)) + "%" + " " + str(int(count)) + "/" + str(int(length)), end="\r")
             cv2.imwrite(pathOut + "\\frame%d.jpg" % count, resized)
             count = count + 1
         else:
@@ -78,7 +79,7 @@ def createAnimation(mp4File, mp3File, length, fps):
                             line += " "
                     asciiFrame += line + "\n"
                 percent = (int(frameN)/int(length))*100
-                print("  Creating animation file... " + math.floor(percent)*"#" + (100 - math.floor(percent))*" " + str(round(percent, 2)) + "%", end="\r")
+                print("  Creating animation file... " + math.floor(percent)*"#" + (100 - math.floor(percent))*" " + str(round(percent, 2)) + "%" + " " + str(int(frameN)) + "/" + str(int(length)), end="\r")
                 for i, char in enumerate(asciiFrame):
                     if char != lastAsciiFrame[i]:
                         file.write(f"{i}={char}\n")
@@ -99,6 +100,7 @@ def cleanUp(prompt):
         shutil.rmtree("./frames")
 
 def startup():
+    os.system('cls')
     usrIn = input(f"What to do?\n\"p\": load and play a video\n\"c\": create a video file to play\n\"clean\": clean-up\n--> ")
     if usrIn == "p":
         play()
@@ -134,11 +136,11 @@ def create():
 
     if not os.path.isdir("./frames"):
         os.makedirs("./frames")
-    extractImages(mp4File, "./frames")
-
     sample = cv2.VideoCapture(mp4File)
     length = int(sample.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = sample.get(cv2.CAP_PROP_FPS)
+    extractImages(mp4File, "./frames", length)
+
     createAnimation(mp4File, mp3File, length, fps)
 
     cleanUp(False)
