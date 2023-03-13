@@ -34,7 +34,7 @@ def sound(mp3File):
         pygame.mixer.init()
         pygame.mixer.music.load(f'./saves/{mp3File}')
         pygame.mixer.music.play()
-     except Exception:
+    except Exception:
         print("no audio")
 
 def createAnimation(mp4File, mp3File, length, fps):
