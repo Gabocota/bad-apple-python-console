@@ -6,6 +6,12 @@ import time
 import pygame
 import math
 import re
+import platform
+
+def detect_os():
+    return platform.system()
+
+OPERATING_SYSTEM = detect_os()
 
 def vidToAud(file):
     clip = mp.VideoFileClip("./" + file)
@@ -23,7 +29,10 @@ def extractImages(pathIn, pathOut, length, width):
             resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
             percent = (int(count)/int(length))*100
             print("  Converting frames... " + math.floor(percent)*"#" + (100 - math.floor(percent))*" " + str(round(percent, 2)) + "%" + " " + str(int(count)) + "/" + str(int(length)), end="\r")
-            cv2.imwrite(pathOut + "/frame%d.jpg" % count, resized)
+            if(OPERATING_SYSTEM == "Windows"):
+                cv2.imwrite(pathOut + "\\frame%d.jpg" % count, resized)
+            else:
+                cv2.imwrite(pathOut + "/frame%d.jpg" % count, resized)
             count = count + 1
         else:
             print("\nFrames done!")
@@ -101,7 +110,10 @@ def cleanUp(prompt):
         shutil.rmtree("./frames")
 
 def startup():
-    os.system('cls')
+    if(OPERATING_SYSTEM == "Windows"):
+        os.system('cls')
+    else:
+        os.system('clear')
     usrIn = input(f"What to do?\n\"p\": load and play a video\n\"c\": create a video file to play\n\"clean\": clean-up\n--> ")
     if usrIn == "p":
         play()
