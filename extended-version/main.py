@@ -23,7 +23,7 @@ def extractImages(pathIn, pathOut, length, width):
             resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
             percent = (int(count)/int(length))*100
             print("  Converting frames... " + math.floor(percent)*"#" + (100 - math.floor(percent))*" " + str(round(percent, 2)) + "%" + " " + str(int(count)) + "/" + str(int(length)), end="\r")
-            cv2.imwrite(pathOut + "\\frame%d.jpg" % count, resized)
+            cv2.imwrite(pathOut + "/frame%d.jpg" % count, resized)
             count = count + 1
         else:
             print("\nFrames done!")
